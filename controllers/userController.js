@@ -3,15 +3,17 @@ const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Letter=require("../models/LetterSchema")
+
 
 // @desc    Register the user
 // @route   POST /api/user/register
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { username, email, password } = req.body;
+  const { name, email, password } = req.body;
 
   // Check if all fields are provided
-  if (!username || !email || !password) {
+  if (!name || !email || !password) {
     res.status(400);
     throw new Error("All fields are mandatory");
   }
@@ -28,7 +30,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   // Create new user
   const user = await User.create({
-    username,
+    name,
     email,
     password: hashedPassword,
   });
@@ -47,7 +49,7 @@ const registerUser = asyncHandler(async (req, res) => {
 // @access  Public
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-
+console.log("reccieved")
   // Check if all fields are provided
   if (!email || !password) {
     res.status(400);
@@ -61,7 +63,7 @@ const loginUser = asyncHandler(async (req, res) => {
   if (user && (await bcrypt.compare(password, user.password))) {
     const accessToken = jwt.sign(
       {
-        username: user.username,
+        name: user.name,
         email: user.email,
         id: user.id,
       },
@@ -83,12 +85,39 @@ const loginUser = asyncHandler(async (req, res) => {
 // @route   GET /api/user/current
 // @access  Public
 const currentUser = asyncHandler(async (req, res) => {
-  res.json(req.user);
+  res.json(
+    req.user,
+    user.name,
+    user.email
+  );
 });
+
+
+
+// @desc    Submit Letter
+// @route   POST /api/letter/submit
+// @access  Public
+// const submitLetter = asyncHandler(async (req, res) => {
+//     const { fullName, department, semester, recipient, letterType, reason } = req.body;
+
+//     // 🔍 Basic Validation
+//     if (!fullName || !department || !semester || !recipient || !letterType) {
+//         res.status(400);
+//         throw new Error("All fields are required");
+//     }
+
+//     // 📌 Save to Database
+//     const newLetter = new Letter({ fullName, department, semester, recipient, letterType, reason });
+//     await newLetter.save();
+
+//     res.status(201).json({ message: "Letter details saved successfully", letterId: newLetter._id ,fullName:newLetter.fullName});
+// });
+
 
 module.exports = {
   registerUser,
   loginUser,
   currentUser,
+  
   
 };
