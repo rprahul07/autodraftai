@@ -1,0 +1,32 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@400;600&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #1e3a8a;
+  --secondary: #d4af37;
+  --accent: #800020;
+  --background: #fffff0;
+  --text: #333333;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text);
+  font-family: "Cormorant Garamond", serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Playfair Display", serif;
+}
+
+.accent-font {
+  font-family: "Montserrat", sans-serif;
+}
