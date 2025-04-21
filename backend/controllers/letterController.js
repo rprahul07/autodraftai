@@ -103,6 +103,8 @@ const generateAILetter = async (
     - Description: ${description}
     - From Date: ${fromDate}
     - End Date: ${endDate}
+    -Application Date:current date 
+    -instruction :no instruction to the user include in respoece only response no bold notations
     Format it professionally for submission without any extra instructions or placeholders.
     `;
 

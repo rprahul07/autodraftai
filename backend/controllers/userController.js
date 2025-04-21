@@ -49,18 +49,31 @@ const registerUser = asyncHandler(async (req, res) => {
 // @access  Public
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-console.log("reccieved")
-  // Check if all fields are provided
+  console.log("📥 Received login request", email);
+
   if (!email || !password) {
     res.status(400);
     throw new Error("All fields are mandatory");
   }
 
-  // Find user by email
+  // Fetch user from database
   const user = await User.findOne({ email });
+  console.log("🔍 Fetched user:", user);
 
-  // Check if user exists and password matches
-  if (user && (await bcrypt.compare(password, user.password))) {
+  if (!user) {
+    res.status(401);
+    throw new Error("Email or Password is not valid");
+  }
+
+  // Compare password with hashed password in DB
+  console.log("Checking password:", password);
+  console.log("Hashed password in database:", user.password);
+
+  const passwordMatch = await bcrypt.compare(password, user.password);
+  console.log("Password match result:", passwordMatch);
+
+  if (passwordMatch) {
+    // Generate access token
     const accessToken = jwt.sign(
       {
         name: user.name,
@@ -70,16 +83,16 @@ console.log("reccieved")
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "15m" }
     );
+    console.log("Generated Access Token:", accessToken);
 
-    // Send access token
-    res.status(200).json({ accessToken });
+    console.log("✅ Login successful");
+    res.status(200).json({ token: accessToken, message: "Login successful" });
   } else {
     res.status(401);
     throw new Error("Email or Password is not valid");
   }
-
- 
 });
+
 
 // @desc    Get current user
 // @route   GET /api/user/current
